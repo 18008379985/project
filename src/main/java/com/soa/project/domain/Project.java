@@ -11,7 +11,7 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class Projects {
+public class Project {
   private String guid;
   private String projectName;
   private String projectCode;

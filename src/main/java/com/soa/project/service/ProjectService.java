@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/projects/service")
-public class ProjectsService {
+public class ProjectService {
 
 }

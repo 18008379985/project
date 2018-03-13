@@ -1,0 +1,40 @@
+a:link, a:visited {
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+ul, li, dl, dt, dd {
+    list-style: none;
+    float: left;
+}
+.thLeft {
+    float: left;
+}
+.tab_select dl {
+    padding: 0;
+    margin:5px 0;
+}
+.thPadT5{ padding:5px 0}
+.tab_select dt {
+    width: 80px;
+    height:20px;
+    background: #FE984F;
+    font: bold 12px/20px Microsoft Yahei,Tahoma,Geneva,sans-serif;
+    color: #fff;
+    text-align: center;
+    margin-left: 5px;
+}
+.tab_select dd {
+    line-height: 20px;
+    width: 800px;
+    _width: 800px;
+}
+.tab_select dd a {
+    color: #888;
+    font-size:12px;
+    margin-left: 5px;
+    display: inline-block;
+}
+.clrfix{ clear:both;}
+.clr_after{
+    margin-left: 10px;}

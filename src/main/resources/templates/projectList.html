@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+	<link rel="stylesheet" type="text/css" href="../static/jquery/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../static/jquery/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../static/css/customSearch.css">
+	<script type="text/javascript" src="../static/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/jquery/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../static/jquery/easyui-lang-zh_CN.js"></script>
+
+    
+</head>
+<body class="easyui-layout" style="padding: 5px">
+
+	<div id="searchPanel" class="easyui-panel" title="搜索条件" style="height:170px;padding:5px;"
+		 data-options="iconCls:'icon-search',collapsible:true">
+
+		<form id="searchForm" class="easyui-form" method="post" data-options="novalidate:true" >
+			<div class="thLeft thPadT5 tab_select">
+				<dl class="clrfix">
+					<dt>项目类型</dt>
+					<dd class="clr_after">
+						<a href="#">全部</a>
+						<a href="#">产品实施</a>
+						<a href="#">定制开发</a>
+					</dd>
+				</dl>
+				<dl class="clrfix">
+					<dt>进度进度</dt>
+					<dd class="clr_after">
+						<a href="#">全部</a>
+						<a href="#">未开始</a>
+						<a href="#">进行中</a>
+						<a href="#">已完成</a>
+					</dd>
+				</dl>
+				<dl class="clrfix">
+					<dt>项目阶段</dt>
+					<dd class="clr_after">
+						<a href="#">全部</a>
+						<a href="#">准备阶段</a>
+						<a href="#">需求阶段</a>
+						<a href="#">设计与开发阶段</a>
+						<a href="#">测试阶段</a>
+						<a href="#">上线与验收阶段</a>
+						<a href="#">运维阶段</a>
+					</dd>
+				</dl>
+				<dl class="clrfix">
+					<dt>项目收款</dt>
+					<dd class="clr_after">
+						<a href="#">全部</a>
+						<a href="#">0%</a>
+						<a href="#">30%</a>
+						<a href="#">60%</a>
+						<a href="#">90%</a>
+						<a href="#">100%</a>
+					</dd>
+				</dl>
+
+			</div>
+
+		</form>
+
+		<div style="margin:10px auto auto auto;">
+			<input class="easyui-searchbox" data-options="prompt:'Please Input Value',searcher:doSearch" style="width:20%">
+		</div>
+
+	</div>
+
+	<div style="height: 5px"></div><!-- 配合控制两个panel的间距 -->
+
+	<div id="listPanel" class="easyui-panel" title="项目列表" style="height: 600px;padding:5px;"
+		 data-options="iconCls:'icon-save'">
+		<table    id="DataGrid"
+
+				  class="easyui-datagrid"
+
+				  style="width:100%;height:100%;"
+
+				  data-options="rownumbers:true,
+
+			              singleSelect:true,
+
+			              pagination:false,
+
+			              url:'GetData.jsp',
+
+			              method:'get',
+
+			              toolbar:'#toolbar',
+
+			              onClickRow:getSelected">
+
+			<thead data-options="frozen:true">
+			<tr>
+				<th data-options="field:'ck',checkbox:true"></th>
+				<th data-options="field:'PROCESS_NAME',width:150,align:'left'">项目名称</th>
+			</tr>
+			</thead>
+
+			<thead>
+			<tr>
+				<th data-options="field:'PROCESS_TYPE',width:150,align:'left'">项目类型</th>
+				<th data-options="field:'PROCESS_DESC',width:300,align:'left'">客户名称</th>
+				<th data-options="field:'PROCESS_VERSION',width:300,align:'center'">合同总额</th>
+				<th data-options="field:'PROCESS_STATE',width:80,align:'center'">项目状态</th>
+			</tr>
+			</thead>
+		</table>
+
+	</div>
+
+		
+		
+
+	    	
+	    	
+<script type="text/javascript">
+	
+	
+	function clearForm(){ $('#editForm').form('clear');}
+
+
+	function doSave() {
+			
+			$('#editForm').form('submit', { 
+				
+				url : 'SetData.jsp', 
+				
+				onSubmit : function() { 
+					
+				return $(this).form('enableValidation').form('validate');
+				
+				}, 
+				
+				success : function(data) { 
+
+				if(data=="true"){
+					
+						$.messager.alert("操作提示", "操作成功！","info");
+						
+						$('#DataGrid').datagrid('reload');
+						
+					}else{
+						
+						 $.messager.alert("操作提示", "操作失败！","error");
+					}
+				} 
+				}); 
+		}
+
+
+	function doSearch(value){
+		// $('#DataGrid').datagrid('load',{PROCESS_NAME: $('#searchStr').val()});
+		alert('You input: ' + value);
+
+
+
+      $.post('GetData.jsp',{PROCESS_NAME:$('#searchStr').val()},function(result){
+
+          	   
+            	 if (result)
+            	 {
+                    $('#DataGrid').datagrid('loadData',result);
+                
+            	 } else
+                 {
+                    $.messager.alert("操作提示", "查询失败!","info");
+                 }
+
+                },'json');
+
+		}
+		
+
+		function doRemove()
+		
+		{				
+			var sys_id = "";
+
+	        var row = $('#DataGrid').datagrid('getSelections');
+	            
+	        for(var i=0; i<row.length; i++)
+	        { 					
+				sys_id += row[i].PROCESS_ID +",";				
+			}
+			
+	        sys_id = sys_id.substr(0,sys_id.length-1); //去掉字符串最后面的逗号；
+			    
+			if (row.length>0)
+			{
+	            $.messager.confirm('操作提示','确定要删除所选择的记录吗?',function(r){
+	                	
+	            if (r){	           		   
+
+	                  $.post('RemoveData.jsp',{PROCESS_ID:sys_id},function(result){
+
+	                    	   
+	                    	 if (result)
+	                    	 {
+	                            $('#DataGrid').datagrid('reload');    // reload the user data
+	                         } else
+	                         {
+	                            $.messager.alert("操作提示", "删除失败!","info");
+	                         }
+
+	                        },'json');
+
+	             } // END IF (r)
+
+	             });  // END  $.messager.confirm
+
+	         } // END  if (row.length>0)        
+
+	      } // END function doRemove
+	      
+	      
+	    //表格选择行记录赋值给表单
+		function getSelected()
+	    {
+			var row = $('#DataGrid').datagrid('getSelected');
+			
+			if (row){ $('#editForm').form('load', row)}
+		}
+
+		
+
+</script>
+	    	
+</body>
+</html>
