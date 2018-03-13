@@ -1,9 +1,6 @@
 package com.soa.project.domain;
 
-
-import org.springframework.data.annotation.Id;
-
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 /**
  *  @author liyanhua
@@ -11,6 +8,7 @@ import javax.persistence.Entity;
  */
 
 @Entity
+@Table(name = "project")
 public class Project {
   private String guid;
   private String projectName;

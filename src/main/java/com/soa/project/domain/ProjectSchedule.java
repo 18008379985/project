@@ -1,10 +1,10 @@
 package com.soa.project.domain;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "projectSchedule")
 public class ProjectSchedule {
   private String guid;
   private String projectGuid;

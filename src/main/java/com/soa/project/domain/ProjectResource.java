@@ -1,10 +1,10 @@
 package com.soa.project.domain;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "projectResource")
 public class ProjectResource {
   private String guid;
   private String projectGuid;
