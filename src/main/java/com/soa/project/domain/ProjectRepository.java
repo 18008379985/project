@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * createDate:2018/03/10
  */
 
-public interface ProjectsRepository extends JpaRepository<Project, Integer>,JpaSpecificationExecutor<Project> {
+public interface ProjectRepository extends JpaRepository<Project, Integer>,JpaSpecificationExecutor<Project> {
 
     /** JpaRepository 继承于PagingAndSortingRepository接口，将返回类型 Iterable 转换成了List， 并新增了写方法
      * List<T> findAll();
