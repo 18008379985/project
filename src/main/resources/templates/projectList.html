@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="/jquery/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/jquery/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/js/project.js"></script>
 
     
 </head>
@@ -21,9 +22,9 @@
 				<dl class="clrfix">
 					<dt>项目类型</dt>
 					<dd class="clr_after">
-						<a href="#">全部</a>
-						<a href="#">产品实施</a>
-						<a href="#">定制开发</a>
+						<a href="#" onclick="doSearchByType('全部',this)">全部</a>
+						<a href="#" onclick="doSearchByType('产品实施',this)">产品实施</a>
+						<a href="#" onclick="doSearchByType('定制开发',this)">定制开发</a>
 					</dd>
 				</dl>
 				<dl class="clrfix">
@@ -64,7 +65,7 @@
 		</form>
 
 		<div style="margin:10px auto auto auto;">
-			<input class="easyui-searchbox" data-options="prompt:'Please Input Value',searcher:doSearch" style="width:20%">
+			<input  id="searchInput" class="easyui-searchbox" data-options="prompt:'请输入项目名称',searcher:doSearchByName" style="width:20%">
 		</div>
 
 	</div>
@@ -83,7 +84,7 @@
 
 			              singleSelect:true,
 
-			              pagination:false,
+			              pagination:true,
 
 			              url:'/service/getProjectList',
 
@@ -96,15 +97,17 @@
 			<thead data-options="frozen:true">
 			<tr>
 				<th data-options="field:'ck',checkbox:true"></th>
-				<th data-options="field:'projectName',width:150,align:'left'">项目名称</th>
+				<th data-options="field:'customerName',width:100,align:'left'">客户名称</th>
+				<th data-options="field:'projectCode',width:80,align:'left'">项目编号</th>
+				<th data-options="field:'projectName',width:300,align:'left'">项目名称</th>
 			</tr>
 			</thead>
 
 			<thead>
 			<tr>
-				<th data-options="field:'typeCode',width:150,align:'left'">项目类型</th>
-				<th data-options="field:'customerName',width:150,align:'left'">客户名称</th>
-				<th data-options="field:'contractAmount',width:100,align:'center'">合同总额</th>
+				<th data-options="field:'typeCode',width:80,align:'left'">项目类型</th>
+
+				<th data-options="field:'contractAmount',width:80,align:'right'">合同总额</th>
 				<th data-options="field:'pmName',width:80,align:'center'">项目经理</th>
 			</tr>
 			</thead>
@@ -112,122 +115,6 @@
 
 	</div>
 
-
-
-
-
-
-<script type="text/javascript">
-
-
-	function clearForm(){ $('#editForm').form('clear');}
-
-
-	function doSave() {
-
-			$('#editForm').form('submit', {
-
-				url : 'SetData.jsp',
-
-				onSubmit : function() {
-
-				return $(this).form('enableValidation').form('validate');
-
-				},
-
-				success : function(data) {
-
-				if(data=="true"){
-
-						$.messager.alert("操作提示", "操作成功！","info");
-
-						$('#DataGrid').datagrid('reload');
-
-					}else{
-
-						 $.messager.alert("操作提示", "操作失败！","error");
-					}
-				}
-				});
-		}
-
-
-	function doSearch(value){
-		// $('#DataGrid').datagrid('load',{PROCESS_NAME: $('#searchStr').val()});
-		alert('You input: ' + value);
-
-
-
-      $.post('GetData.jsp',{PROCESS_NAME:$('#searchStr').val()},function(result){
-
-
-            	 if (result)
-            	 {
-                    $('#DataGrid').datagrid('loadData',result);
-
-            	 } else
-                 {
-                    $.messager.alert("操作提示", "查询失败!","info");
-                 }
-
-                },'json');
-
-		}
-
-
-		function doRemove()
-
-		{
-			var sys_id = "";
-
-	        var row = $('#DataGrid').datagrid('getSelections');
-
-	        for(var i=0; i<row.length; i++)
-	        {
-				sys_id += row[i].PROCESS_ID +",";
-			}
-
-	        sys_id = sys_id.substr(0,sys_id.length-1); //去掉字符串最后面的逗号；
-
-			if (row.length>0)
-			{
-	            $.messager.confirm('操作提示','确定要删除所选择的记录吗?',function(r){
-
-	            if (r){
-
-	                  $.post('RemoveData.jsp',{PROCESS_ID:sys_id},function(result){
-
-
-	                    	 if (result)
-	                    	 {
-	                            $('#DataGrid').datagrid('reload');    // reload the user data
-	                         } else
-	                         {
-	                            $.messager.alert("操作提示", "删除失败!","info");
-	                         }
-
-	                        },'json');
-
-	             } // END IF (r)
-
-	             });  // END  $.messager.confirm
-
-	         } // END  if (row.length>0)
-
-	      } // END function doRemove
-
-
-	    //表格选择行记录赋值给表单
-		function getSelected()
-	    {
-			var row = $('#DataGrid').datagrid('getSelected');
-
-			if (row){ $('#editForm').form('load', row)}
-		}
-
-
-
-</script>
 	    	
 </body>
 </html>
