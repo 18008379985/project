@@ -1,7 +1,7 @@
 
 function doSearchByType(val,id){
 
-    $("a").css("color","#888");
+    $('#dd1').find("a").css("color","#888");
 
     $(id).css("color","#FE984F");
 
@@ -10,9 +10,19 @@ function doSearchByType(val,id){
         if (data) {$('#DataGrid').datagrid('loadData', data);} else{showMessage("没有查询到数据！");}
 
     },'json');
+}
 
+function doSearchBySchedule(val,id){
 
+    $('#dd2').find("a").css("color","#888");
 
+    $(id).css("color","#FE984F");
+
+    $.post('/service/findProjectByType',{projectType:val},function(data) {
+
+        if (data) {$('#DataGrid').datagrid('loadData', data);} else{showMessage("没有查询到数据！");}
+
+    },'json');
 }
 
 function doSearchByName(val){
