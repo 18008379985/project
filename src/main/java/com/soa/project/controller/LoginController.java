@@ -3,11 +3,14 @@ package com.soa.project.controller;
 import com.soa.project.domain.Person;
 import com.soa.project.domain.PersonRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,6 +22,8 @@ import java.util.List;
 @Controller
 public class LoginController {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private PersonRepository personRepository;
 
@@ -26,36 +31,39 @@ public class LoginController {
     public String login(){ return "login"; }
 
     @RequestMapping("/index")
-    public String verification(@RequestParam String accounts,String password){
+    public String verification(@ModelAttribute Person person, Model model){
 
-        System.out.println("accounts:"+accounts+",password:"+password);
+        logger.info("accounts:{},password:{}",person.getAccounts(),person.getPassword());
 
         long count;
 
-        //step1:verification user accounts is right
+        //step1:verification user accounts
 
         count = personRepository.count(new Specification<Person>(){
             @Override
             public Predicate toPredicate(Root<Person> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
-                return cb.equal(root.get("accounts"), accounts);
+                return cb.equal(root.get("accounts"), person.getAccounts());
             }
         });
 
         if(count==0) {
-            System.out.println("accounts is not right");
+            model.addAttribute("accounts", person.getAccounts());
+            model.addAttribute("accountsError", "accounts incorrect");
+            return "login";
         }
 
-        //step2:verification user password is right
+        //step2:verification user password
+
         List<Person> personList = personRepository.findAll(new Specification<Person>(){
             @Override
             public Predicate toPredicate(Root<Person> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
                 List<Predicate> list = new ArrayList<Predicate>();
 
-                list.add(cb.equal(root.get("accounts"), accounts));
+                list.add(cb.equal(root.get("accounts"), person.getAccounts()));
 
-                list.add(cb.equal(root.get("password"), password));
+                list.add(cb.equal(root.get("password"), person.getPassword()));
 
                 Predicate[] p = new Predicate[list.size()];
 
@@ -64,15 +72,14 @@ public class LoginController {
         });
 
         if(personList.isEmpty()) {
-            System.out.println("password is not right");
+            model.addAttribute("accounts", person.getAccounts());
+            model.addAttribute("password", person.getPassword());
+            model.addAttribute("passwordError", "password incorrect");
+            return "login";
         }
-
-        System.out.println("search accounts num:"+personList.size());
-
 
 
         //step2:verification success , into  index page;
-        //step3:verification fail , return login page;
 
         return "index";
 
